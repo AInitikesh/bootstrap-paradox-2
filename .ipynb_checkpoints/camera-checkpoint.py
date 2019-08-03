@@ -56,7 +56,7 @@ class VideoCamera(object):
         print(image.shape, re2.shape)
         
         re2 = cv2.resize(re2, (image.shape[1], image.shape[0]))
-        print(image.shape, re2.shape)
+        
         res = cv2.bitwise_and(image,image,mask = re2)
         # res = np.hstack((image,res))
         return res
