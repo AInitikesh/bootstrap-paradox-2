@@ -53,7 +53,7 @@ class VideoCamera(object):
         if not self.metadata_size_flag:
             image = self.rotateclockwise(image)
         re1, re2 = DL.run(image)
-        print(image.shape, re2.shape)
+        
         
         re2 = cv2.resize(re2, (image.shape[1], image.shape[0]))
         
