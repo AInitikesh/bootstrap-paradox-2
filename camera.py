@@ -18,7 +18,8 @@ class VideoCamera(object):
         # as the main.py.
         self.video = cv2.VideoCapture('videos/1.mp4')
         self.io_video = imageio.get_reader('videos/1.mp4',  'ffmpeg')
-        self.metadata_size = self.io_video.get_meta_data()['size']
+        self.metadata_size_flag = self.io_video.get_meta_data()['source_size'] == self.io_video.get_meta_data()['size']
+        
 
     def __del__(self):
         self.video.release()
@@ -46,12 +47,16 @@ class VideoCamera(object):
         return cv2.flip(image, flipCode=0)
 
     def process_image(self, image):
-        width = self.metadata_size[0]
-        height = self.metadata_size[1]
-        if width<height:
+        
+        width = image.shape[0]
+        height = image.shape[1]
+        if not self.metadata_size_flag:
             image = self.rotateclockwise(image)
         re1, re2 = DL.run(image)
-        re2 = cv2.resize(re2, (width, height))
+        print(image.shape, re2.shape)
+        
+        re2 = cv2.resize(re2, (image.shape[1], image.shape[0]))
+        print(image.shape, re2.shape)
         res = cv2.bitwise_and(image,image,mask = re2)
         # res = np.hstack((image,res))
         return res
