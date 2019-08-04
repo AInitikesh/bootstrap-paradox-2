@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__, static_url_path='')
 
 
-
+camera_obj = VideoCamera(1)
 
 @app.route('/')
 def static_files():
@@ -22,9 +22,18 @@ def stream_data():
                 break
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-    return Response(gen(VideoCamera()),
+    global camera_obj
+    model_v = camera_obj.get_model_v()
+    del camera_obj
+    camera_obj = VideoCamera(model_v)
+    return Response(gen(camera_obj),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/change_model')
+def change_model():
+    model_number = int(request.args.get('model_number'))
+    camera_obj.change_model(model_number)
+    return "Success"
 
 
 @app.route('/file_upload', methods = ['POST', 'GET'])

@@ -12,10 +12,10 @@ class DLModel(object):
 
   
     
-  def __init__(self, tarball_path):
+  def __init__(self, tarball_path, input_size=513):
     """Creates and loads pretrained deeplab model."""
     self.graph = tf.Graph()
-
+    self.INPUT_SIZE = input_size
     
     with self.graph.as_default():
       
@@ -34,7 +34,7 @@ class DLModel(object):
 
   def run(self, image):
     
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
     #image = Image.fromarray(image)
     width =image.shape[0]
     height = image.shape[1]
