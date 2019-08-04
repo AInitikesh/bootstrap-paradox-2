@@ -54,8 +54,21 @@ class VideoCamera(object):
             image = self.rotateclockwise(image)
         re1, re2 = DL.run(image)
         
+        im2, contours, hierarchy = cv2.findContours(re2, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        #print( len(contours))
+        area=0
+        maxindex=0
+        for ind, con in enumerate(contours):
+            if area <cv2.contourArea(con):
+                area = cv2.contourArea(con)
+                maxindex = ind
+            
+        mask = np.zeros(re2.shape,np.uint8)
+        cv2.drawContours(mask,[contours[maxindex]],0,255,-1)
+
+				
         
-        re2 = cv2.resize(re2, (image.shape[1], image.shape[0]))
+        re2 = cv2.resize(mask, (image.shape[1], image.shape[0]))
         
         res = cv2.bitwise_and(image,image,mask = re2)
         # res = np.hstack((image,res))
